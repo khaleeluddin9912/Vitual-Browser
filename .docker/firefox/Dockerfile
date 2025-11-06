@@ -9,11 +9,11 @@ RUN set -eux; apt-get update; \
     \
     # Get the ACTUAL download URL from the redirect
     ACTUAL_URL=$(curl -s -L -I -o /dev/null -w '%{url_effective}' "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"); \
-    curl -L "$ACTUAL_URL" -o /tmp/firefox.tar.bz2; \
+    curl -L "$ACTUAL_URL" -o /tmp/firefox.tar.xz; \
     \
-    # Extract Firefox
-    tar -xjf /tmp/firefox.tar.bz2 -C /opt; \
-    rm -f /tmp/firefox.tar.bz2; \
+    # Extract Firefox (using xz compression)
+    tar -xJf /tmp/firefox.tar.xz -C /opt; \
+    rm -f /tmp/firefox.tar.xz; \
     ln -s /opt/firefox/firefox /usr/bin/firefox; \
     \
     # create profile directory
