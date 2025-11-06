@@ -9,8 +9,8 @@ RUN set -eux; apt-get update; \
     apt-get install -y --no-install-recommends openbox \
     xz-utils bzip2 libgtk-3-0 libdbus-glib-1-2; \
     #
-    # fetch latest release
-    wget -O /tmp/firefox-setup.tar.bz2 "${SRC_URL}"; \
+    # fetch latest release - ADD --trust-server-names TO FOLLOW REDIRECTS
+    wget --trust-server-names -O /tmp/firefox-setup.tar.bz2 "${SRC_URL}"; \
     mkdir /usr/lib/firefox; \
     tar -xjf /tmp/firefox-setup.tar.bz2 -C /usr/lib; \
     rm -f /tmp/firefox-setup.tar.bz2; \
