@@ -1,15 +1,14 @@
-version: "3"
+version: "3.8"
 services:
-  neko:
+  virtual-browser:
     image: "khaleeluddin/virtual-browser:latest"
     restart: "unless-stopped"
     shm_size: "2gb"
     ports:
       - "8081:8080"
-      - "52000-52100:52000-52100/udp"
     environment:
-      NEKO_SCREEN: 1920x1080@30
-      NEKO_PASSWORD: neko
-      NEKO_PASSWORD_ADMIN: admin
-      NEKO_EPR: 52000-52100
-      NEKO_ICELITE: 1
+      - DISPLAY=:99
+    command: >
+      sh -c "Xvfb :99 -screen 0 1920x1080x24 &
+             sleep 2 &&
+             firefox --kiosk --width 1920 --height 1080"
