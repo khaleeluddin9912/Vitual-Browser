@@ -1,6 +1,13 @@
 ARG BASE_IMAGE=m1k1o/neko:base
 FROM $BASE_IMAGE
 
+# Comprehensive security updates
+RUN apt-get update && \
+    apt-get dist-upgrade -y --no-install-recommends && \
+    apt-get install -y --no-install-recommends apt-transport-https ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
 #
 # install firefox
 RUN set -eux; apt-get update; \
@@ -24,6 +31,16 @@ RUN set -eux; apt-get update; \
     apt-get --purge autoremove -y xz-utils bzip2; \
     apt-get clean -y; \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
+# Remove unnecessary packages that might have vulnerabilities
+RUN apt-get remove -y --purge \
+    python2.7 \
+    python2.7-minimal \
+    libpython2.7-stdlib \
+    libpython2.7-minimal \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 #
 # copy configuration files
