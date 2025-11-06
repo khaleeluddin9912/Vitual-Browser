@@ -1,7 +1,15 @@
+
 # Use a more recent Debian base
 FROM debian:bookworm-slim
 
-# Install necessary packages
+# Install ca-certificates FIRST before any curl operations
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates && \
+    update-ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install remaining packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     openbox \
@@ -18,7 +26,7 @@ RUN apt-get update && \
 # Create neko user
 RUN useradd -m -d /home/neko -s /bin/bash neko
 
-# Install Firefox
+# Install Firefox with certificate fix
 RUN set -eux; \
     ACTUAL_URL=$(curl -s -L -I -o /dev/null -w '%{url_effective}' "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"); \
     curl -L "$ACTUAL_URL" -o /tmp/firefox.tar.xz; \
