@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=m1k1o/neko:base
 FROM $BASE_IMAGE
 
-# Use direct Firefox download URL (no redirects)
+# Fixed Firefox URL - direct download
 ARG SRC_URL="https://download-installer.cdn.mozilla.net/pub/firefox/releases/latest/linux-x86_64/en-US/firefox-latest.tar.bz2"
 
 #
@@ -9,18 +9,17 @@ ARG SRC_URL="https://download-installer.cdn.mozilla.net/pub/firefox/releases/lat
 RUN set -eux; apt-get update; \
     apt-get install -y --no-install-recommends openbox \
     xz-utils bzip2 libgtk-3-0 libdbus-glib-1-2; \
-    #
-    # fetch latest release - direct download without redirects
-    wget -O /tmp/firefox-setup.tar.bz2 "${SRC_URL}"; \
-    mkdir /usr/lib/firefox; \
-    tar -xjf /tmp/firefox-setup.tar.bz2 -C /usr/lib; \
-    rm -f /tmp/firefox-setup.tar.bz2; \
+    \
+    # Fixed: Use direct download URL
+    wget -O /tmp/firefox.tar.bz2 "${SRC_URL}"; \
+    tar -xjf /tmp/firefox.tar.bz2 -C /usr/lib; \
+    rm -f /tmp/firefox.tar.bz2; \
     ln -s /usr/lib/firefox/firefox /usr/bin/firefox; \
-    #
-    # create a profile directory
+    \
+    # create profile directory
     mkdir -p /home/neko/.mozilla/firefox/profile.default/extensions; \
     chown -R neko:neko /home/neko/.mozilla/firefox/profile.default; \
-    #
+    \
     # clean up
     apt-get --purge autoremove -y xz-utils bzip2; \
     apt-get clean -y; \
