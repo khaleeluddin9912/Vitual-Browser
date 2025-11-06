@@ -1,20 +1,20 @@
 ARG BASE_IMAGE=m1k1o/neko:base
 FROM $BASE_IMAGE
 
-# Fixed Firefox URL - direct download
-ARG SRC_URL="https://download-installer.cdn.mozilla.net/pub/firefox/releases/latest/linux-x86_64/en-US/firefox-latest.tar.bz2"
-
 #
 # install firefox
 RUN set -eux; apt-get update; \
     apt-get install -y --no-install-recommends openbox \
-    xz-utils bzip2 libgtk-3-0 libdbus-glib-1-2; \
+    curl xz-utils bzip2 libgtk-3-0 libdbus-glib-1-2; \
     \
-    # Fixed: Use direct download URL
-    wget -O /tmp/firefox.tar.bz2 "${SRC_URL}"; \
-    tar -xjf /tmp/firefox.tar.bz2 -C /usr/lib; \
+    # Get the ACTUAL download URL from the redirect
+    ACTUAL_URL=$(curl -s -L -I -o /dev/null -w '%{url_effective}' "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"); \
+    curl -L "$ACTUAL_URL" -o /tmp/firefox.tar.bz2; \
+    \
+    # Extract Firefox
+    tar -xjf /tmp/firefox.tar.bz2 -C /opt; \
     rm -f /tmp/firefox.tar.bz2; \
-    ln -s /usr/lib/firefox/firefox /usr/bin/firefox; \
+    ln -s /opt/firefox/firefox /usr/bin/firefox; \
     \
     # create profile directory
     mkdir -p /home/neko/.mozilla/firefox/profile.default/extensions; \
