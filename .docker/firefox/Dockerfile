@@ -24,7 +24,6 @@ RUN apt-get update && \
 
 # Create neko user
 RUN useradd -m -d /home/neko -s /bin/bash neko
-
 # Install Firefox with certificate fix
 RUN set -eux; \
     ACTUAL_URL=$(curl -s -L -I -o /dev/null -w '%{url_effective}' "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"); \
