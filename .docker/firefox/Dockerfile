@@ -1,4 +1,3 @@
-
 # Use a more recent Debian base
 FROM debian:bookworm-slim
 
